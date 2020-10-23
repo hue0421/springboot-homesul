@@ -14,16 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.cos.jwt.domain.person.Person;
-import com.cos.jwt.domain.person.PersonRepository;
+import com.cos.jwt.domain.person.Member;
+import com.cos.jwt.domain.person.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class JwtAuthenticationFilter implements Filter{
 
-	private PersonRepository personRepository;
+	private MemberRepository personRepository;
 	
-	public JwtAuthenticationFilter(PersonRepository personRepository) {
+	public JwtAuthenticationFilter(MemberRepository personRepository) {
 		this.personRepository = personRepository;
 	}
 	
@@ -47,12 +47,12 @@ public class JwtAuthenticationFilter implements Filter{
 			
 			ObjectMapper om = new ObjectMapper();
 			try {
-				Person person = om.readValue(req.getInputStream(), Person.class);
+				Member person = om.readValue(req.getInputStream(), Member.class);
 				System.out.println(person); 
 				
 				// 1번 username, password를 DB에 던짐
-				Person personEntity = 
-				personRepository.findByUsernameAndPassword(person.getUsername(), person.getPassword());
+				Member personEntity = 
+				personRepository.findByMembernameAndPassword(person.getMembername(), person.getPassword());
 				// 2번 값이 있으면 있다?. 없다?
 				if(personEntity == null) {
 					System.out.println("유저네임 혹은 패스워드가 틀렸습니다.");	
@@ -66,7 +66,7 @@ public class JwtAuthenticationFilter implements Filter{
 							.withSubject("토큰제목")
 							.withExpiresAt(new Date(System.currentTimeMillis()+JwtProps.halfhour))
 							.withClaim("id", personEntity.getId())
-							.withClaim("username", personEntity.getUsername())
+							.withClaim("username", personEntity.getMembername())
 							.sign(Algorithm.HMAC512(JwtProps.secret));
 					
 					resp.addHeader(JwtProps.header,JwtProps.auth+jwtToken);

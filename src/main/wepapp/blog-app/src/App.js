@@ -1,42 +1,36 @@
 import React, { useEffect } from 'react';
 import './App.css';
+import { Route } from "react-router-dom";
+import Nav from "./components/Nav";
+import Join from "./pages/person/Join";
+import Login from "./pages/person/Login";
+import styled from "styled-components";
 
+const AppFont = styled.div`
+  font-family : 'Cafe24Simplehae';
+`;
+
+const AppBackgroundStyle = styled.div`
+  background-image: url("../images/background.jpg");
+  height: 600px;
+  weight: 1200px;
+  background-repeat: no-repeat;
+  background-position: center
+`;
 function App() {
 
-  let person = {
-    username:"abcd",
-    password:"1234"
-  }
-
-  useEffect(()=>{
-    fetch("http://localhost:8000/loginProc",{
-      method:"post",
-      body: JSON.stringify(person),
-      headers:{
-        'Content-Type':"application/json; charset=utf-8"
-      }
-    }).then(res=>{
-      console.log(1,res);
-      for(let header of res.headers.entries()){
-      if(header[0] ==="authorization"){
-        localStorage.setItem("authorization",header[1]);
-      }
-      
-    }
-      return res.text();
-    }).then(res=>{
-      //if(res==="ok"){ // ==두개는 값비교 === 세개는 값과 타입비교
-        console.log(3,res);
-      
-    });
-    
-    //localStorage.setItem("jwt","asdfabsdf");
-    //let jwtToken = localStorage.getItem("jwt");
-    //console.log(jwtToken);
-  },[]);
+  
 
   return (
-   <div>1</div>
+    <AppFont>
+   <AppBackgroundStyle>
+     <Nav/>
+   
+  <Route path="/join" exact={true} component={Join}></Route>
+  <Route path="/login" exact={true} component={Login}></Route>
+ 
+   </AppBackgroundStyle>
+   </AppFont>
   );
 }
 

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cos.jwt.domain.person.Person;
-import com.cos.jwt.domain.person.PersonRepository;
+import com.cos.jwt.domain.person.Member;
+import com.cos.jwt.domain.person.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,29 +20,30 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class IndexController {
 	
-	private final PersonRepository personRepository;
+	private final MemberRepository memberRepository;
 	
 	@GetMapping({"", "/"})
 	public String index() {
-		return "index";
+		
+		return "index1";
 	}
 	
 	
 	@PostMapping("/joinProc")
-	public String 회원가입(@RequestBody Person person) {
+	public String 회원가입(@RequestBody Member member) {
 		
-		personRepository.save(person);
+		memberRepository.save(member);
 		return "ok";
 	}
 	
 	//@CrossOrigin(origins = "http://127.0.0.1:5500", methods = RequestMethod.GET)
-	@GetMapping("/person/{id}")
+	@GetMapping("/member/{id}")
 	public ResponseEntity<?> 회원정보(@PathVariable int id,
 			HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if(session.getAttribute("principal") != null) {
-			Person personEntity = personRepository.findById(id).get();
-			return new ResponseEntity<Person>(personEntity,HttpStatus.OK);
+			Member memberEntity = memberRepository.findById(id).get();
+			return new ResponseEntity<Member>(memberEntity,HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You don't have authorization",HttpStatus.FORBIDDEN);
 		
